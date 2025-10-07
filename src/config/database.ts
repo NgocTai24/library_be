@@ -1,6 +1,12 @@
 import { Sequelize } from 'sequelize-typescript';
 import "dotenv/config";
-import User from '../model/user.model';
+import {
+	Member,
+	Staff,
+	Category,
+	Book,
+	Borrow,
+} from 'model';
 
 export const sequelize = new Sequelize({
 	database: process.env.DB_NAME!,
@@ -17,8 +23,11 @@ export const sequelize = new Sequelize({
 		collate: 'utf8mb4_unicode_ci',
 	},
 	models: [
-		//path.resolve(__dirname, '/models')
-		User,
+		Staff,
+		Member,
+		Category,
+		Book,
+		Borrow,
 	],
 	logging: false,
 });
