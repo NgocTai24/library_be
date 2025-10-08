@@ -1,8 +1,10 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from "bcryptjs";
 import { generaAccessToken, generaRefreshToken } from '@helper/general-token';
 import { NotFoundError, UnauthorizedError, CacheRepository, TokenError, BadRequestError } from '@helper';
 import { v4 as uuidv4 } from 'uuid';
 import "dotenv/config";
+import User from '@models/user.model';
 
 
 
@@ -20,11 +22,7 @@ class AuthService {
 
     const user = await User.findOne({
       where: { email },
-      attributes: [
-        'id', 'fullname', 'email', 'isLock', 'phone', 'avatar', 'balance',
-        'score', 'password', 'roles', 'emailVerified', 'isProfessional',
-        'is2FAEnabled', 'twoFactorSecret'
-      ],
+      attributes: ['id', 'name', 'email', 'password', 'role', 'image'],
     });
 
     if (!user) {
@@ -40,13 +38,8 @@ class AuthService {
       throw new UnauthorizedError('Mật khẩu không chính xác');
     }
 
-    if (user.is2FAEnabled && user.twoFactorSecret) {
-      await CacheRepository.delete(loginAttemptKey);
-      return { twoFactorRequired: true, userId: user.id };
-    }
-
+    // Xóa thông tin nhạy cảm
     delete (user as any).password;
-    delete (user as any).twoFactorSecret;
     await CacheRepository.delete(loginAttemptKey);
 
     const accessToken = await generaAccessToken(user);
@@ -123,17 +116,15 @@ class AuthService {
   //   }
   // }
 
-  // static async register(fullname: string, email: string, password: string, confirmPassword: string) {
-  //   const existsUser = await User.findOne({ where: { email } });
-  //   if (existsUser) {
-  //     throw new UnauthorizedError('Email đã được đăng ký');
-  //   }
-  //   if (password !== confirmPassword) {
-  //     throw new UnauthorizedError('Xác nhận mật khẩu không khớp');
-  //   }
-  //   const user = await User.create({ fullname, email, password });
-  //   return user;
-  // }
+  static async register(name: string, email: string, password: string ) {
+    const existsUser = await User.findOne({ where: { email } });
+    if (existsUser) {
+      throw new UnauthorizedError('Email đã được đăng ký');
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({ name, email, password: hashedPassword });
+    return user;
+  }
 
   // static async refreshToken(refreshToken: string) {
   //   if (!refreshToken) {

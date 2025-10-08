@@ -23,12 +23,6 @@ export class User extends Model {
   })
   name!: string;
 
-  @Column({
-    type: DataType.STRING(50),
-    allowNull: true,
-    unique: true,
-  })
-  username!: string;
 
   @Column({
     type: DataType.STRING(255),

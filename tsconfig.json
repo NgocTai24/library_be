@@ -14,7 +14,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     
-    "baseUrl": "src",
+    "baseUrl": "./src",
     "paths": {
       "@config/*": ["config/*"],
       "@config": ["config/index"],
@@ -22,22 +22,19 @@
       "@models": ["models/index"],
       "@socket/*": ["socket/*"],
       "@socket": ["socket/index"],
-      "@controller/*": ["controller/*"],
-      "@controller": ["controller/index"],
-      "@middleware/*": ["middleware/*"],
-      "@middleware": ["middleware/index"],
-      "@router/*": ["router/*"],
-      "@router": ["router/index"],
+      "@controllers/*": ["controllers/*"],
+      "@controllers": ["controllers/index"],
+      "@middlewares/*": ["middlewares/*"],
+      "@middlewares": ["middlewares/index"],
+      "@routes/*": ["routes/*"], // Thêm alias @routes
+      "@routes": ["routes/index"],
       "@helper/*": ["helper/*"],
       "@helper": ["helper/index"],
-      "@validation/*": ["validation/*"],
-      "@validation": ["validation/index"],
+      "@validator/*": ["validator/*"],
+      "@validator": ["validator/index"],
       "@service/*": ["service/*"],
       "@service": ["service/index"],
-      "@api-doc/*": ["api-doc/*"],
-      "@api-doc": ["api-doc/index"],
-      "@interface/*": ["interface/*"],
-      "@interface": ["interface/index"]
+
     }
   },
   "include": ["src/**/*.ts"],

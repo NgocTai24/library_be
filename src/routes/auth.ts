@@ -1,14 +1,14 @@
 import express, { Request, Response } from "express";
 const Router = express.Router();
-// import { AuthController } from "@controller";
+import AuthController from "controllers/auth.controller";
 // import { verifyRole } from "@middleware/verify-token";
-// import { validatorRegister ,validatorLogin} from "@validation";
+import { validatorRegister ,validatorLogin} from "@validator";
 
 
 
-// Router.post("/login",validatorLogin, AuthController.login as any);
+Router.post("/login", AuthController.login as any);
 // Router.post("/loginGoogle", AuthController.googleLogin as any);
-// Router.post("/register",validatorRegister, AuthController.register as any);
+Router.post("/register", AuthController.register as any);
 // Router.post("/logout", verifyRole([Roles.User,Roles.Agent]),AuthController.logout as any);
 // Router.post("/refreshToken", AuthController.refreshToken as any);
 // Router.post("/forgotPassword", AuthController.forgotPassword as any);

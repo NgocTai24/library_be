@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import body_parser from 'body-parser';
+import route from './routes/index';
 import morgan from 'morgan';
 import { connectDatabase } from '@models/connect';
 
@@ -13,6 +14,7 @@ app.use(body_parser.json());
 app.use(body_parser.urlencoded({extended:true}));
 app.use(morgan('dev'));
 connectDatabase();
+route(app);
 
 app.listen(PORT, async () => {
   console.log(`Server is running at http://localhost:${PORT}`);

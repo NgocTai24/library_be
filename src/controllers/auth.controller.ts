@@ -10,33 +10,24 @@ class AuthController {
     try {
       const result = await AuthService.login(email, password);
 
-      if (result.twoFactorRequired) {
-        return res.status(200).json(
-          ApiResponse.success(
-            { twoFactorRequired: true, userId: result.userId },
-            'Yêu cầu xác thực 2FA',
-          ),
-        );
-      }
+      res.cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        path: '/',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
 
-  //     res.cookie('refreshToken', result.refreshToken, {
-  //       httpOnly: true,
-  //       secure: process.env.NODE_ENV === 'production',
-  //       sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-  //       path: '/',
-  //       maxAge: 7 * 24 * 60 * 60 * 1000,
-  //     });
-
-  //     return res.status(200).json(
-  //       ApiResponse.success(
-  //         { accessToken: result.accessToken, user: result.user },
-  //         'Đăng nhập thành công',
-  //       ),
-  //     );
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+      return res.status(200).json(
+        ApiResponse.success(
+          { accessToken: result.accessToken, user: result.user },
+          'Đăng nhập thành công',
+        ),
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
   // //[login with google]
   // static async googleLogin(req: Request, res: Response, next: NextFunction) {
   //   const { email, displayName, photoUrl } = req.body;
@@ -74,16 +65,16 @@ class AuthController {
   //   }
   // }
 
-  // //[register]
-  // static async register(req: Request, res: Response, next: NextFunction) {
-  //   const { fullname, email, password, confirmPassword } = req.body;
-  //   try {
-  //     await AuthService.register(fullname, email, password, confirmPassword);
-  //     return res.status(201).json(ApiResponse.success(null, 'Đăng ký thành công'));
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  //[register]
+  static async register(req: Request, res: Response, next: NextFunction) {
+    const { name, email, password } = req.body;
+    try {
+      await AuthService.register(name, email, password);
+      return res.status(201).json(ApiResponse.success(null, 'Đăng ký thành công'));
+    } catch (error) {
+      next(error);
+    }
+  }
 
   // //[logout]
   // static async logout(req: Request, res: Response, next: NextFunction): Promise<Response | void> {

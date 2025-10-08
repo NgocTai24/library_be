@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ValidationError, NotFoundError, UnauthorizedError, TokenError, BadRequestError, ForbiddenError } from '@helper';
+import {  NotFoundError, UnauthorizedError, TokenError, BadRequestError, ForbiddenError } from '@helper';
 import {ApiResponse} from "@helper";
 const errorMiddleware = (
   err: any,
@@ -18,10 +18,7 @@ const errorMiddleware = (
     status = err.status || 401;
   } else if (err instanceof ForbiddenError) {
     message = err.message;
-    status = err.status || 403;
-  } else if (err instanceof ValidationError || err instanceof BadRequestError) {
-    message = err.message;
-    status = err.status || 400;
+    status = err.status || 403;  
   } else {
     console.error(err);
     message = 'Internal server error';
