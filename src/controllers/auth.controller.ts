@@ -5,19 +5,19 @@ import { ApiResponse, UnauthorizedError } from "@helper";
 import "dotenv/config";
 class AuthController {
   //[login]
-  // static async login(req: Request, res: Response, next: NextFunction) {
-  //   const { email, password } = req.body;
-  //   try {
-  //     const result = await AuthService.login(email, password);
+  static async login(req: Request, res: Response, next: NextFunction) {
+    const { email, password } = req.body;
+    try {
+      const result = await AuthService.login(email, password);
 
-  //     if (result.twoFactorRequired) {
-  //       return res.status(200).json(
-  //         ApiResponse.success(
-  //           { twoFactorRequired: true, userId: result.userId },
-  //           'Yêu cầu xác thực 2FA',
-  //         ),
-  //       );
-  //     }
+      if (result.twoFactorRequired) {
+        return res.status(200).json(
+          ApiResponse.success(
+            { twoFactorRequired: true, userId: result.userId },
+            'Yêu cầu xác thực 2FA',
+          ),
+        );
+      }
 
   //     res.cookie('refreshToken', result.refreshToken, {
   //       httpOnly: true,

@@ -1,58 +1,58 @@
 import jwt from 'jsonwebtoken';
 import { generaAccessToken, generaRefreshToken } from '@helper/general-token';
-import { NotFoundError, UnauthorizedError, transporter, CacheRepository, TokenError, BadRequestError } from '@helper';
+import { NotFoundError, UnauthorizedError, CacheRepository, TokenError, BadRequestError } from '@helper';
 import { v4 as uuidv4 } from 'uuid';
 import "dotenv/config";
 
 
 
 class AuthService {
-  // static async login(email: string, password: string) {
-  //   const loginAttemptKey = `login_attempt:${email}`;
-  //   const lockKey = `login_lock:${email}`;
+  static async login(email: string, password: string) {
+    const loginAttemptKey = `login_attempt:${email}`;
+    const lockKey = `login_lock:${email}`;
 
-  //   const isLocked = await CacheRepository.get(lockKey);
-  //   if (isLocked) {
-  //     throw new BadRequestError('Bạn đã nhập sai quá 10 lần, vui lòng thử lại sau 5 phút');
-  //   }
-  //   const attempt = await CacheRepository.get(loginAttemptKey);
-  //   const failedAttempt = attempt ? parseInt(attempt) : 0;
+    const isLocked = await CacheRepository.get(lockKey);
+    if (isLocked) {
+      throw new BadRequestError('Bạn đã nhập sai quá 10 lần, vui lòng thử lại sau 5 phút');
+    }
+    const attempt = await CacheRepository.get(loginAttemptKey);
+    const failedAttempt = attempt ? parseInt(attempt) : 0;
 
-  //   const user = await User.findOne({
-  //     where: { email },
-  //     attributes: [
-  //       'id', 'fullname', 'email', 'isLock', 'phone', 'avatar', 'balance',
-  //       'score', 'password', 'roles', 'emailVerified', 'isProfessional',
-  //       'is2FAEnabled', 'twoFactorSecret'
-  //     ],
-  //   });
+    const user = await User.findOne({
+      where: { email },
+      attributes: [
+        'id', 'fullname', 'email', 'isLock', 'phone', 'avatar', 'balance',
+        'score', 'password', 'roles', 'emailVerified', 'isProfessional',
+        'is2FAEnabled', 'twoFactorSecret'
+      ],
+    });
 
-  //   if (!user) {
-  //     throw new NotFoundError('Người dùng không tồn tại');
-  //   }
+    if (!user) {
+      throw new NotFoundError('Người dùng không tồn tại');
+    }
 
-  //   const isMatch = await bcrypt.compare(password, user.password);
-  //   if (!isMatch) {
-  //     await CacheRepository.set(loginAttemptKey, failedAttempt + 1, 300);
-  //     if (failedAttempt + 1 >= 10) {
-  //       await CacheRepository.set(lockKey, 'locked', 300);
-  //     }
-  //     throw new UnauthorizedError('Mật khẩu không chính xác');
-  //   }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      await CacheRepository.set(loginAttemptKey, failedAttempt + 1, 300);
+      if (failedAttempt + 1 >= 10) {
+        await CacheRepository.set(lockKey, 'locked', 300);
+      }
+      throw new UnauthorizedError('Mật khẩu không chính xác');
+    }
 
-  //   if (user.is2FAEnabled && user.twoFactorSecret) {
-  //     await CacheRepository.delete(loginAttemptKey);
-  //     return { twoFactorRequired: true, userId: user.id };
-  //   }
+    if (user.is2FAEnabled && user.twoFactorSecret) {
+      await CacheRepository.delete(loginAttemptKey);
+      return { twoFactorRequired: true, userId: user.id };
+    }
 
-  //   delete (user as any).password;
-  //   delete (user as any).twoFactorSecret;
-  //   await CacheRepository.delete(loginAttemptKey);
+    delete (user as any).password;
+    delete (user as any).twoFactorSecret;
+    await CacheRepository.delete(loginAttemptKey);
 
-  //   const accessToken = await generaAccessToken(user);
-  //   const refreshToken = await generaRefreshToken(user);
-  //   return { accessToken, refreshToken, user };
-  // }
+    const accessToken = await generaAccessToken(user);
+    const refreshToken = await generaRefreshToken(user);
+    return { accessToken, refreshToken, user };
+  }
 
   // static async googleLogin(googleData: { email: string; displayName: string; photoUrl: string }) {
   //   try {

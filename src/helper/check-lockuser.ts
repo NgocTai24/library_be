@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { User } from '@models';
+import { User } from '@model';
 import cron from 'node-cron';
 
 const autoUnlockUsers = async () => {
