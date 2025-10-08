@@ -1,11 +1,10 @@
 import { Sequelize } from 'sequelize-typescript';
 import "dotenv/config";
 import {
-	Member,
-	Staff,
 	Category,
 	Book,
 	Borrow,
+	User
 } from 'model';
 
 export const sequelize = new Sequelize({
@@ -23,11 +22,10 @@ export const sequelize = new Sequelize({
 		collate: 'utf8mb4_unicode_ci',
 	},
 	models: [
-		Staff,
-		Member,
 		Category,
 		Book,
 		Borrow,
+		User
 	],
 	logging: false,
 });

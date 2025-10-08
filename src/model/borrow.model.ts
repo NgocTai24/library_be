@@ -1,13 +1,12 @@
 import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import Member from './member.model';
+import User from './user.model';
 import Book from './book.model';
-import Staff from './staff.model';
 
 @Table({
   tableName: 'borrow',
   timestamps: true,
   indexes: [
-    { name: 'idx_member_id', fields: ['memberId'] },
+    { name: 'idx_user_id', fields: ['userId'] },
     { name: 'idx_book_id', fields: ['bookId'] },
   ],
 })
@@ -20,16 +19,18 @@ export class Borrow extends Model {
   })
   id!: string;
 
-  @ForeignKey(() => Member)
+  // Người mượn (user)
+  @ForeignKey(() => User)
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  memberId!: string;
+  userId!: string;
 
-  @BelongsTo(() => Member)
-  member!: Member;
+  @BelongsTo(() => User)
+  user!: User;
 
+  // Sách mượn
   @ForeignKey(() => Book)
   @Column({
     type: DataType.STRING,
@@ -72,15 +73,16 @@ export class Borrow extends Model {
   })
   status!: 'borrowed' | 'returned' | 'overdue';
 
-  @ForeignKey(() => Staff)
+  // Nhân viên xử lý (user)
+  @ForeignKey(() => User)
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   staffId!: string;
 
-  @BelongsTo(() => Staff)
-  staff!: Staff;
+  @BelongsTo(() => User, 'staffId')
+  staff!: User;
 }
 
 export default Borrow;

@@ -1,11 +1,14 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 @Table({
-  tableName: 'staff',
+  tableName: 'users',
   timestamps: true,
-  indexes: [{ name: 'idx_username', fields: ['username'] }],
+  indexes: [
+    { name: 'idx_email', fields: ['email'] },
+    { name: 'idx_username', fields: ['username'] },
+  ],
 })
-export class Staff extends Model {
+export class User extends Model {
   @Column({
     type: DataType.STRING,
     primaryKey: true,
@@ -22,7 +25,7 @@ export class Staff extends Model {
 
   @Column({
     type: DataType.STRING(50),
-    allowNull: false,
+    allowNull: true,
     unique: true,
   })
   username!: string;
@@ -34,18 +37,24 @@ export class Staff extends Model {
   password!: string;
 
   @Column({
-    type: DataType.ENUM('admin', 'librarian'),
-    defaultValue: 'librarian',
-    allowNull: false,
-  })
-  role!: 'admin' | 'librarian';
-
-  @Column({
     type: DataType.STRING(100),
     allowNull: true,
+    unique: true,
   })
   email!: string;
 
+  @Column({
+    type: DataType.ENUM('student', 'teacher', 'other', 'admin', 'librarian'),
+    allowNull: false,
+    defaultValue: 'student',
+  })
+  role!: 'student' | 'teacher' | 'other' | 'admin' | 'librarian';
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  image!: string;
 }
 
-export default Staff;
+export default User;
